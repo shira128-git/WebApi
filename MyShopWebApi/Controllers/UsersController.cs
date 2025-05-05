@@ -10,7 +10,13 @@ namespace MyShopWebApi.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        UserService userService = new UserService();
+   
+        private readonly IUserService userService;
+
+        public UsersController(IUserService _userService)
+        {
+            userService = _userService;
+        }
         // GET: api/<UsersController>
         [HttpGet]
         public IEnumerable<string> Get()

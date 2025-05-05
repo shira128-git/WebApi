@@ -4,13 +4,18 @@ using Repositories;
 using Zxcvbn;
 namespace Services
 {
-    public class UserService
+    public class UserService : IUserService
     {
-        UserRepository userRepository = new UserRepository();
+        
+        private readonly IUserRepository userRepository;
+        public UserService(IUserRepository _userRepository)
+        {
+            userRepository = _userRepository;
+        }
         public User Register(User user)
         {
             //return userRepository.Register(user);
-            if(CheckPassword(user.password)<2)
+            if (CheckPassword(user.password) < 2)
             {
                 return null;
             }
