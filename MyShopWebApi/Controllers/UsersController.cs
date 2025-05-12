@@ -40,10 +40,10 @@ namespace MyShopWebApi.Controllers
         }
 
         [HttpPost("register")]
-        public ActionResult<User> Register([FromBody] User user)
+        public async Task<ActionResult<User>> Register([FromBody] User user)
         {
 
-            User u = _userService.Register(user);
+            User u = await _userService.Register(user);
             if (u!=null)
             {
                 return Ok(u);
@@ -54,17 +54,14 @@ namespace MyShopWebApi.Controllers
         }
 
         [HttpPost("login")]
-        public ActionResult<User> Login([FromBody] User user)
+        public async Task<ActionResult<User>> Login([FromBody] User user)
         {
-
-
-            User u = _userService.Login(user.userName,user.password);
+            User u =await _userService.Login(user.UserName,user.Password);
             if (u!=null)
             {
                 return Ok(u);
             }
             return StatusCode(400,"try again");
-
         }
 
         [HttpPost("checkPassword")]

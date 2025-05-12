@@ -1,3 +1,5 @@
+using Entities;
+using Microsoft.EntityFrameworkCore;
 using Repositories;
 using Services;
 
@@ -7,9 +9,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
 builder.Services.AddScoped<IUserService, UserService >();
 
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddDbContext<ShopContext>(options =>
+    options.UseSqlServer("Data Source=SRV2\\PUPILS;Initial Catalog=Shop ; Integrated Security=True; Trusted_Connection=True;TrustServerCertificate=True"));
+
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 //builder.Services.AddOpenApi();
