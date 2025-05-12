@@ -16,10 +16,10 @@ Register = async () => {
     }
    
     const user = {
-        userName: userName,
-        password: password,
-        firstName: firstName,
-        lastName: lastName
+        UserName: userName,
+        Password: password,
+        FirstName: firstName,
+        LastName: lastName
     }
 
     try {
@@ -72,14 +72,17 @@ Login = async () => {
     }
    
     const user = {
-        userName: userName,
-        password: password,
-        firstName: "",
-        lastName: ""
+        UserName: userName,
+        Password: password,
+        FirstName: "FirstName",
+        LastName: "LastName"
 
     }
-    try {
 
+
+    try {
+        
+        console.log("llll",user)
         const responsePost = await fetch("api/Users/login", {
             method: 'POST',
             headers: {
@@ -88,11 +91,11 @@ Login = async () => {
             body: JSON.stringify(user)
         });
         console.log(responsePost);
-        //alert(responsePost)
         userDatails = await responsePost.json()
         if (responsePost.ok) {
             alert(`${userDatails.firstName} loginnnnn`);
             console.log(userDatails);
+            localStorage.setItem("UserId", userDatails.id);
         }
 
         else {
@@ -116,10 +119,11 @@ Login = async () => {
 
     }
     catch (e) {
+        
         alert("Error: " + e.message);
     }
     
-    localStorage.setItem("UserId", userDatails.userId);
+   
 }
 
 
@@ -128,14 +132,19 @@ const UpDate = async () => {
     const lastname = document.getElementById("last_name_u").value;
     const password = document.getElementById("password_u").value;
     const username = document.getElementById("user_name_u").value;
+    
+    const id = localStorage.getItem("UserId")
+
     const user = {
+        Id:id,
         userName: username,
         password: password,
         firstName: firstname,
         lastName: lastname
     }
-    const id = localStorage.getItem("UserId")
+
     alert(id)
+
     const responsePost = await fetch(`api/Users/${id}`, {
         method: 'Put',
         headers: {

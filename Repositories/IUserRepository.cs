@@ -5,8 +5,8 @@ namespace Repositories
     public interface IUserRepository
     {
         List<User> GetUsers();
-        User Login(string userName);
-        User Register(User user);
-        User UpDate(User user, int id);
+        Task<User> Login(string userName); 
+        Task<User> Register(User user);
+        Task<User> UpDate(User user, int id);
     }
 }
