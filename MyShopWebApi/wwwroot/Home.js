@@ -1,4 +1,6 @@
 ﻿
+//GetCategory
+
 Register = async () => {
 
     const userName = document.getElementById("user_name").value;
