@@ -13,6 +13,10 @@ public partial class ShopContext : DbContext
         : base(options)
     {
     }
+    public ShopContext()
+    {
+        
+    }
 
     public virtual DbSet<Category> Categories { get; set; }
 
@@ -42,13 +46,9 @@ public partial class ShopContext : DbContext
         {
             entity.HasOne(d => d.Order).WithMany(p => p.OrderItems)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_order_id1");
-
-            entity.HasOne(d => d.OrderNavigation).WithMany(p => p.OrderItemOrderNavigations)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_order_id");
 
-            entity.HasOne(d => d.Product).WithMany(p => p.OrderItemProducts)
+            entity.HasOne(d => d.Product).WithMany(p => p.OrderItems)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_product_id");
         });

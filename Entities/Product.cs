@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace Entities;
@@ -31,11 +32,9 @@ public partial class Product
 
     [ForeignKey("CategoryId")]
     [InverseProperty("Products")]
+    [JsonIgnore]
     public virtual Category Category { get; set; }
 
-    [InverseProperty("OrderNavigation")]
-    public virtual ICollection<OrderItem> OrderItemOrderNavigations { get; set; } = new List<OrderItem>();
-
     [InverseProperty("Product")]
-    public virtual ICollection<OrderItem> OrderItemProducts { get; set; } = new List<OrderItem>();
+    public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 }
