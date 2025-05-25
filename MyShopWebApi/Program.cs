@@ -4,6 +4,7 @@ using Repositories;
 using Services;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 // Add services to the container.
 
@@ -15,7 +16,7 @@ builder.Services.AddScoped<IUserService, UserService >();
 
 builder.Services.AddScoped<IProductRepository, ProductRepository >();
 
-builder.Services.AddScoped<IProductService, ProductService >();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 

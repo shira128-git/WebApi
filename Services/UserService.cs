@@ -1,4 +1,6 @@
-﻿using Entities;
+﻿using AutoMapper;
+using Dto;
+using Entities;
 
 using Repositories;
 using Zxcvbn;
@@ -8,9 +10,11 @@ namespace Services
     {
 
         private readonly IUserRepository _userRepository;
-        public UserService(IUserRepository userRepository)
+        private readonly IMapper _mapper;
+        public UserService(IUserRepository userRepository, IMapper mapper)
         {
             _userRepository = userRepository;
+            _mapper = mapper;
         }
         public async Task<User> Register(User user)
         {
@@ -28,17 +32,17 @@ namespace Services
             return null;
         }
 
-        public async Task<User> Login(string UserName, string Password)
+        public async Task<UserLoginDTO> Login(string UserName, string Password)
         {
-
-            User userfound = await _userRepository.Login(UserName);
-            if (userfound == null)
+            var user = _mapper.Map<User>(UserName);
+            var res = await _userRepository.Login(UserName);
+            if (res == null)
             {
                 return null;
             }
-            if (userfound.Password.Trim() == Password)
+            if (res.Password.Trim() == Password)
             {
-                return userfound;
+                return _mapper.Map<UserLoginDTO>(res);
             }
             return null;
         }

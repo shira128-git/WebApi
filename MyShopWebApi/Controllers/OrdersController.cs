@@ -1,4 +1,5 @@
-﻿using Entities;
+﻿using Dto;
+using Entities;
 using Microsoft.AspNetCore.Mvc;
 using Services;
 
@@ -33,9 +34,9 @@ namespace MyShopWebApi.Controllers
 
         // POST api/<OrdersController>
         [HttpPost]
-        public async Task<ActionResult<Product>> Post([FromBody] Order order)
+        public async Task<ActionResult<OrderDTO>> Post([FromBody] OrderDTO order)
         {
-            Order u = await _orderService.Create(order);
+            OrderDTO u = await _orderService.Create(order);
             if (u != null)
             {
                 return Ok(u);

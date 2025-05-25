@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Entities;
 using Services;
+using Dto;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -18,10 +19,8 @@ namespace MyShopWebApi.Controllers
             _productService = productService;
         }
 
-
-
         [HttpGet]
-        public async Task<List<Product>> Get(
+        public async Task<List<ProductDTO>> Get(
         [FromQuery] string? desc,
         [FromQuery] int? minPrice,
         [FromQuery] int? maxPrice,
