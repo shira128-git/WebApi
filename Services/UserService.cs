@@ -16,7 +16,7 @@ namespace Services
             _userRepository = userRepository;
             _mapper = mapper;
         }
-        public async Task<User> Register(User user)
+        public async Task<UserDTO> Register(UserRegisterDTO  user)
         {
             //return userRepository.Register(user);
             if (CheckPassword(user.Password) < 2)
@@ -27,25 +27,36 @@ namespace Services
             User userfound =users.FirstOrDefault(u => u.UserName.Trim() == user.UserName);
             if (userfound == null)
             {
-                return await _userRepository.Register(user);
+
+                var newUser = new User()
+                {
+                    FirstName=user.FirstName.Trim(),
+                    LastName = user.LastName.Trim(),
+                    UserName = user.UserName.Trim(),
+                    Password = user.Password.Trim(),
+                };
+
+                return  _mapper.Map<UserDTO>(await _userRepository.Register(newUser));
             }
             return null;
         }
 
-        public async Task<UserLoginDTO> Login(string UserName, string Password)
+        public async Task<UserDTO> Login(UserLoginDTO user)
         {
-            var user = _mapper.Map<User>(UserName);
-            var res = await _userRepository.Login(UserName);
-            if (res == null)
+            User userfound = await _userRepository.Login(user.UserName);
+          
+            if (userfound == null)
             {
                 return null;
             }
-            if (res.Password.Trim() == Password)
+            if (userfound.Password.Trim() == user.Password)
             {
-                return _mapper.Map<UserLoginDTO>(res);
+                return  _mapper.Map<UserDTO>(userfound);
             }
+           
             return null;
         }
+
 
         public async Task<User> UpDate(User user, int id)
         {

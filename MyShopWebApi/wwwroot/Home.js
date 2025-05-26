@@ -74,11 +74,11 @@ Login = async () => {
     }
    
     const user = {
+
         UserName: userName,
         Password: password,
-        FirstName: "FirstName",
-        LastName: "LastName"
-
+        //FirstName: "FirstName",
+        //LastName: "LastName"
     }
 
 
@@ -95,7 +95,8 @@ Login = async () => {
         console.log(responsePost);
         userDatails = await responsePost.json()
         if (responsePost.ok) {
-            alert(`${userDatails.firstName} loginnnnn`);
+            alert(`${userDatails.userName} loginnnnn`);
+            //alert("loginnnnn")
             console.log(userDatails);
             localStorage.setItem("UserId", userDatails.id);
         }

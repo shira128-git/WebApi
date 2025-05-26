@@ -2,7 +2,6 @@
 using Entities;
 using Dto;
 
-
 namespace MyShopWebApi
 {
     public class AutoMapping:Profile
@@ -13,7 +12,10 @@ namespace MyShopWebApi
             CreateMap<Order, OrderDTO>().ReverseMap();
             CreateMap<OrderItem, OrderItemDTO>().ReverseMap();
             CreateMap<Category, CategoryDTO>().ReverseMap();
+            CreateMap<User, UserDTO>().ReverseMap();
             CreateMap<User, UserLoginDTO>().ReverseMap();
+            CreateMap<User, UserRegisterDTO>().ReverseMap();
+
         }
     }
 }
