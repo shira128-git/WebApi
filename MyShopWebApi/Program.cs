@@ -27,7 +27,7 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 builder.Services.AddDbContext<ShopContext>(options =>
-    options.UseSqlServer("Data Source=SRV2\\PUPILS;Initial Catalog=Shop ; Integrated Security=True; Trusted_Connection=True;TrustServerCertificate=True"));
+    options.UseSqlServer("Data Source=SRV2\\PUPILS;Initial Catalog = Shop ; Integrated Security=True; Trusted_Connection=True;TrustServerCertificate=True"));
 
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
