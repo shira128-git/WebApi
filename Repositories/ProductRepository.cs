@@ -17,21 +17,40 @@ namespace Repositories
             DBcontex = _DBcontex;
         }
 
+        //public async Task<List<Product>> GetProducts(string? desc, int? minPrice, int? maxPrice, int?[] categoryIds)
+        //{
+
+
+        //    var query = DBcontex.Products
+        //        .Include(product => product.Category)
+        //        .Where(product =>
+        //    (desc == null ? (true) : (product.ProductDescription.Contains(desc)))
+        //    && (minPrice == null ? (true) : (product.Price >= minPrice))
+        //    && (maxPrice == null ? (true) : (product.Price <= maxPrice))
+        //    && ((categoryIds.Length == 0) ? (true) : (categoryIds.Contains(product.CategoryId)))).OrderBy(product => product.Price);
+
+        //    List<Product> products = await query.ToListAsync();
+        //    return products;
+
+        //    //return await DBcontex.Products.Include(c=>c.Category).ToListAsync();
+
+        //}
+
         public async Task<List<Product>> GetProducts(string? desc, int? minPrice, int? maxPrice, int?[] categoryIds)
         {
+            categoryIds ??= Array.Empty<int?>();
+
             var query = DBcontex.Products
                 .Include(product => product.Category)
                 .Where(product =>
-            (desc == null ? (true) : (product.ProductDescription.Contains(desc)))
-            && (minPrice == null ? (true) : (product.Price >= minPrice))
-            && (maxPrice == null ? (true) : (product.Price <= maxPrice))
-            && ((categoryIds.Length == 0) ? (true) : (categoryIds.Contains(product.CategoryId)))).OrderBy(product => product.Price);
+                    (desc == null ? true : product.ProductDescription.Contains(desc)) &&
+                    (minPrice == null ? true : product.Price >= minPrice) &&
+                    (maxPrice == null ? true : product.Price <= maxPrice) &&
+                    ((categoryIds.Length == 0) ? true : categoryIds.Contains(product.CategoryId))
+                )
+                .OrderBy(product => product.Price);
 
-            List<Product> products = await query.ToListAsync();
-            return products;
-
-            //return await DBcontex.Products.Include(c=>c.Category).ToListAsync();
-
+            return await query.ToListAsync();
         }
     }
 }
