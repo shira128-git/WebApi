@@ -1,4 +1,6 @@
-﻿using Moq;
+﻿using Dto;
+using Microsoft.Extensions.Logging;
+using Moq;
 using Services;
 using Xunit;
 
@@ -38,5 +40,8 @@ namespace TestProject
             // Assert
             Assert.Equal(expectedStrength, result);
         }
+
+        
     }
 }
+

@@ -1,12 +1,15 @@
 using Entities;
 using Microsoft.EntityFrameworkCore;
+using NLog.Web;
 using Repositories;
 using Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+var logger = NLogBuilder.ConfigureNLog(".nlog.config").GetCurrentClassLogger();
 
 // Add services to the container.
+builder.Host.UseNLog();
 
 builder.Services.AddControllers();
 
@@ -26,8 +29,10 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 
+//builder.Services.AddDbContext<ShopContext>(options =>
+//    options.UseSqlServer("Data Source=SRV2\\PUPILS;Initial Catalog = Shop ; Integrated Security=True; Trusted_Connection=True;TrustServerCertificate=True"));
 builder.Services.AddDbContext<ShopContext>(options =>
-    options.UseSqlServer("Data Source=SRV2\\PUPILS;Initial Catalog = Shop ; Integrated Security=True; Trusted_Connection=True;TrustServerCertificate=True"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

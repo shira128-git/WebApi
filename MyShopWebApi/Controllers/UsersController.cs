@@ -14,10 +14,12 @@ namespace MyShopWebApi.Controllers
         //UserService userService = new UserService();
 
         private readonly IUserService _userService;
+        private readonly ILogger<UsersController> _logger;
 
-        public UsersController(IUserService userService)
+        public UsersController(IUserService userService, ILogger<UsersController> logger)
         {
             _userService = userService;
+            _logger = logger;
         }
 
         // GET: api/<UsersController>
@@ -60,6 +62,7 @@ namespace MyShopWebApi.Controllers
             UserDTO u = await _userService.Login(user);
             if (u!=null)
             {
+                _logger.LogInformation("login " +  u.UserName);
                 return Ok(u);
             }
             return StatusCode(400,"try again");
