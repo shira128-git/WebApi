@@ -146,7 +146,7 @@ const UpDate = async () => {
         lastName: lastname
     }
 
-    alert(id)
+    //alert(id)
 
     const responsePost = await fetch(`api/Users/${id}`, {
         method: 'Put',
@@ -158,7 +158,14 @@ const UpDate = async () => {
     });
 
     if (responsePost.ok) {
-        alert("updated")
+        alert("updated");
+    } else {
+        const errorText = await responsePost.text();
+        if (errorText.includes("User name already exists")) {
+            alert("User name already exists. Please choose a different user name.");
+        } else {
+            alert(`Error: ${errorText}`);
+        }
     }
 
 }

@@ -49,3 +49,638 @@ SELECT @result
 2025-06-18 18:39:09.5155 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/favicon.ico - - -
 2025-06-18 18:39:09.5224 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/favicon.ico - 404 - - 7.0041ms
 2025-06-18 18:39:09.5224 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:44395/favicon.ico, Response status code: 404
+2025-06-18 18:54:57.9431 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (217ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+CREATE DATABASE [MyShop];
+2025-06-18 18:54:58.0636 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (85ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+IF SERVERPROPERTY('EngineEdition') <> 5
+BEGIN
+    ALTER DATABASE [MyShop] SET READ_COMMITTED_SNAPSHOT ON;
+END;
+2025-06-18 18:54:58.0957 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (10ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT 1
+2025-06-18 18:54:58.1032 | INFO | Microsoft.EntityFrameworkCore.Migrations | Acquiring an exclusive lock for migration application. See https://aka.ms/efcore-docs-migrations-lock for more information if this takes too long.
+2025-06-18 18:54:58.1474 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (40ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+DECLARE @result int;
+EXEC @result = sp_getapplock @Resource = '__EFMigrationsLock', @LockOwner = 'Session', @LockMode = 'Exclusive';
+SELECT @result
+2025-06-18 18:54:58.2479 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (10ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
+BEGIN
+    CREATE TABLE [__EFMigrationsHistory] (
+        [MigrationId] nvarchar(150) NOT NULL,
+        [ProductVersion] nvarchar(32) NOT NULL,
+        CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+    );
+END;
+2025-06-18 18:54:58.2613 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT 1
+2025-06-18 18:54:58.2613 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-06-18 18:54:58.2699 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2025-06-18 18:54:58.2911 | INFO | Microsoft.EntityFrameworkCore.Migrations | Applying migration '20250618155425_InitialCreate'.
+2025-06-18 18:54:58.3367 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+CREATE TABLE [Categories] (
+    [ID] int NOT NULL IDENTITY,
+    [CategoryName] nchar(20) NOT NULL,
+    CONSTRAINT [PK_Categories] PRIMARY KEY ([ID])
+);
+2025-06-18 18:54:58.3367 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+CREATE TABLE [Users] (
+    [ID] int NOT NULL IDENTITY,
+    [user_name] nchar(50) NOT NULL,
+    [password] nchar(50) NOT NULL,
+    [first_name] nchar(50) NOT NULL,
+    [last_name] nchar(50) NOT NULL,
+    CONSTRAINT [PK_Users] PRIMARY KEY ([ID])
+);
+2025-06-18 18:54:58.3452 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+CREATE TABLE [Products] (
+    [ID] int NOT NULL IDENTITY,
+    [Category_ID] int NOT NULL,
+    [ProductName] nchar(20) NOT NULL,
+    [ProductDescription] nchar(100) NULL,
+    [Price] float NOT NULL,
+    [ImagePath] nchar(100) NULL,
+    CONSTRAINT [PK_Products] PRIMARY KEY ([ID]),
+    CONSTRAINT [FK_Category_ID] FOREIGN KEY ([Category_ID]) REFERENCES [Categories] ([ID])
+);
+2025-06-18 18:54:58.3452 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+CREATE TABLE [Orders] (
+    [ID] int NOT NULL IDENTITY,
+    [order_date] date NOT NULL,
+    [order_sum] float NOT NULL,
+    [user_id] int NOT NULL,
+    CONSTRAINT [PK_Orders] PRIMARY KEY ([ID]),
+    CONSTRAINT [FK_user_id] FOREIGN KEY ([user_id]) REFERENCES [Users] ([ID])
+);
+2025-06-18 18:54:58.4701 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+CREATE TABLE [Order_Item] (
+    [ID] int NOT NULL IDENTITY,
+    [product_id] int NOT NULL,
+    [order_id] int NOT NULL,
+    [quantity] int NOT NULL,
+    CONSTRAINT [PK_Order_Item] PRIMARY KEY ([ID]),
+    CONSTRAINT [FK_order_id] FOREIGN KEY ([order_id]) REFERENCES [Orders] ([ID]),
+    CONSTRAINT [FK_product_id] FOREIGN KEY ([product_id]) REFERENCES [Products] ([ID])
+);
+2025-06-18 18:54:58.4728 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+CREATE INDEX [IX_Order_Item_order_id] ON [Order_Item] ([order_id]);
+2025-06-18 18:54:58.4728 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+CREATE INDEX [IX_Order_Item_product_id] ON [Order_Item] ([product_id]);
+2025-06-18 18:54:58.4728 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+CREATE INDEX [IX_Orders_user_id] ON [Orders] ([user_id]);
+2025-06-18 18:54:58.4728 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+CREATE INDEX [IX_Products_Category_ID] ON [Products] ([Category_ID]);
+2025-06-18 18:54:58.4728 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20250618155425_InitialCreate', N'9.0.6');
+2025-06-18 18:54:58.4918 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+DECLARE @result int;
+EXEC @result = sp_releaseapplock @Resource = '__EFMigrationsLock', @LockOwner = 'Session';
+SELECT @result
+2025-06-18 19:00:35.1182 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/Home.html - - -
+2025-06-18 19:00:35.1828 | INFO | Microsoft.Hosting.Lifetime | Application started. Press Ctrl+C to shut down.
+2025-06-18 19:00:35.1890 | INFO | Microsoft.Hosting.Lifetime | Hosting environment: Development
+2025-06-18 19:00:35.1890 | INFO | Microsoft.Hosting.Lifetime | Content root path: C:\Users\User\Downloads\WebApi\MyShopWebApi
+2025-06-18 19:00:35.8719 | INFO | Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware | The file /Home.html was not modified
+2025-06-18 19:00:35.8950 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/_framework/aspnetcore-browser-refresh.js - - -
+2025-06-18 19:00:35.8950 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/Home.js - - -
+2025-06-18 19:00:35.8950 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/Home.html - 304 - text/html 783.9561ms
+2025-06-18 19:00:35.9081 | INFO | Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware | The file /Home.js was not modified
+2025-06-18 19:00:35.9081 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/Home.js - 304 - text/javascript 14.0512ms
+2025-06-18 19:00:35.9812 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/_framework/aspnetcore-browser-refresh.js - 200 16509 application/javascript;+charset=utf-8 55.2822ms
+2025-06-18 19:00:35.9812 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/favicon.ico - - -
+2025-06-18 19:00:36.0274 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/favicon.ico - 404 - - 5.2603ms
+2025-06-18 19:00:36.0274 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:44395/favicon.ico, Response status code: 404
+2025-06-18 19:00:55.8405 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 POST https://localhost:44395/api/Users/checkPassword - application/json 6
+2025-06-18 19:00:55.8460 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.CheckPassword (MyShopWebApi)'
+2025-06-18 19:00:55.8870 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "CheckPassword", controller = "Users"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult`1[System.Int32] CheckPassword(System.String) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 19:00:56.5289 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor | Executing OkObjectResult, writing value of type 'System.Int32'.
+2025-06-18 19:00:56.5462 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.CheckPassword (MyShopWebApi) in 649.3545ms
+2025-06-18 19:00:56.5462 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.CheckPassword (MyShopWebApi)'
+2025-06-18 19:00:56.5489 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 POST https://localhost:44395/api/Users/checkPassword - 200 - application/json;+charset=utf-8 708.3898ms
+2025-06-18 19:01:16.4625 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 POST https://localhost:44395/api/Users/checkPassword - application/json 10
+2025-06-18 19:01:16.4625 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.CheckPassword (MyShopWebApi)'
+2025-06-18 19:01:16.4625 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "CheckPassword", controller = "Users"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult`1[System.Int32] CheckPassword(System.String) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 19:01:16.4993 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor | Executing OkObjectResult, writing value of type 'System.Int32'.
+2025-06-18 19:01:16.4993 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.CheckPassword (MyShopWebApi) in 35.0788ms
+2025-06-18 19:01:16.4993 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.CheckPassword (MyShopWebApi)'
+2025-06-18 19:01:16.4993 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 POST https://localhost:44395/api/Users/checkPassword - 200 - application/json;+charset=utf-8 39.1165ms
+2025-06-18 19:01:16.5103 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 POST https://localhost:44395/api/Users/register - application/json 75
+2025-06-18 19:01:16.5103 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Register (MyShopWebApi)'
+2025-06-18 19:01:16.5242 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Register", controller = "Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[Dto.UserDTO]] Register(Dto.UserRegisterDTO) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 19:01:17.9784 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (23ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT [u].[ID], [u].[first_name], [u].[last_name], [u].[password], [u].[user_name]
+FROM [Users] AS [u]
+2025-06-18 19:01:18.2586 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (67ms) [Parameters=[@p0='?' (Size = 50), @p1='?' (Size = 50), @p2='?' (Size = 50), @p3='?' (Size = 50)], CommandType='Text', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Users] ([first_name], [last_name], [password], [user_name])
+OUTPUT INSERTED.[ID]
+VALUES (@p0, @p1, @p2, @p3);
+2025-06-18 19:01:18.3205 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor | Executing OkObjectResult, writing value of type 'Dto.UserDTO'.
+2025-06-18 19:01:18.3205 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Register (MyShopWebApi) in 1802.285ms
+2025-06-18 19:01:18.3205 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Register (MyShopWebApi)'
+2025-06-18 19:01:18.3374 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 POST https://localhost:44395/api/Users/register - 200 - application/json;+charset=utf-8 1827.1727ms
+2025-06-18 19:01:27.1458 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 POST https://localhost:44395/api/Users/checkPassword - application/json 10
+2025-06-18 19:01:27.1458 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.CheckPassword (MyShopWebApi)'
+2025-06-18 19:01:27.1458 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "CheckPassword", controller = "Users"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult`1[System.Int32] CheckPassword(System.String) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 19:01:27.1458 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor | Executing OkObjectResult, writing value of type 'System.Int32'.
+2025-06-18 19:01:27.1458 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.CheckPassword (MyShopWebApi) in 2.8879ms
+2025-06-18 19:01:27.1458 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.CheckPassword (MyShopWebApi)'
+2025-06-18 19:01:27.1458 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 POST https://localhost:44395/api/Users/checkPassword - 200 - application/json;+charset=utf-8 4.4060ms
+2025-06-18 19:01:27.1458 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 POST https://localhost:44395/api/Users/register - application/json 75
+2025-06-18 19:01:27.1458 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Register (MyShopWebApi)'
+2025-06-18 19:01:27.1458 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Register", controller = "Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[Dto.UserDTO]] Register(Dto.UserRegisterDTO) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 19:01:27.2026 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT [u].[ID], [u].[first_name], [u].[last_name], [u].[password], [u].[user_name]
+FROM [Users] AS [u]
+2025-06-18 19:01:27.2541 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (37ms) [Parameters=[@p0='?' (Size = 50), @p1='?' (Size = 50), @p2='?' (Size = 50), @p3='?' (Size = 50)], CommandType='Text', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Users] ([first_name], [last_name], [password], [user_name])
+OUTPUT INSERTED.[ID]
+VALUES (@p0, @p1, @p2, @p3);
+2025-06-18 19:01:27.2541 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor | Executing OkObjectResult, writing value of type 'Dto.UserDTO'.
+2025-06-18 19:01:27.2541 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Register (MyShopWebApi) in 104.2866ms
+2025-06-18 19:01:27.2541 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Register (MyShopWebApi)'
+2025-06-18 19:01:27.2541 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 POST https://localhost:44395/api/Users/register - 200 - application/json;+charset=utf-8 105.0420ms
+2025-06-18 19:01:41.9181 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 PUT https://localhost:44395/api/Users/null - application/json 85
+2025-06-18 19:01:41.9181 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:01:41.9292 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Put", controller = "Users"}. Executing controller action with signature Void Put(Int32, Entities.User) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 19:01:41.9749 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor | Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2025-06-18 19:01:42.0106 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi) in 81.2364ms
+2025-06-18 19:01:42.0106 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:01:42.0106 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 PUT https://localhost:44395/api/Users/null - 400 - application/problem+json;+charset=utf-8 93.8185ms
+2025-06-18 19:02:01.3986 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 PUT https://localhost:44395/api/Users/null - application/json 85
+2025-06-18 19:02:01.3986 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:02:01.3986 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Put", controller = "Users"}. Executing controller action with signature Void Put(Int32, Entities.User) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 19:02:01.3986 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor | Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2025-06-18 19:02:01.3986 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi) in 7.6763ms
+2025-06-18 19:02:01.4083 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:02:01.4083 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 PUT https://localhost:44395/api/Users/null - 400 - application/problem+json;+charset=utf-8 10.1986ms
+2025-06-18 19:02:05.8989 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 PUT https://localhost:44395/api/Users/null - application/json 85
+2025-06-18 19:02:05.8989 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:02:05.8989 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Put", controller = "Users"}. Executing controller action with signature Void Put(Int32, Entities.User) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 19:02:05.8989 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor | Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2025-06-18 19:02:05.8989 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi) in 5.905ms
+2025-06-18 19:02:05.8989 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:02:05.8989 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 PUT https://localhost:44395/api/Users/null - 400 - application/problem+json;+charset=utf-8 7.9543ms
+2025-06-18 19:02:09.4334 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 PUT https://localhost:44395/api/Users/null - application/json 85
+2025-06-18 19:02:09.4334 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:02:09.4334 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Put", controller = "Users"}. Executing controller action with signature Void Put(Int32, Entities.User) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 19:02:09.4334 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor | Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2025-06-18 19:02:09.4334 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi) in 4.0052ms
+2025-06-18 19:02:09.4334 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:02:09.4334 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 PUT https://localhost:44395/api/Users/null - 400 - application/problem+json;+charset=utf-8 4.9831ms
+2025-06-18 19:02:17.7856 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 PUT https://localhost:44395/api/Users/null - application/json 85
+2025-06-18 19:02:17.7856 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:02:17.7856 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Put", controller = "Users"}. Executing controller action with signature Void Put(Int32, Entities.User) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 19:02:17.7856 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor | Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2025-06-18 19:02:17.7856 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi) in 5.1994ms
+2025-06-18 19:02:17.7856 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:02:17.7856 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 PUT https://localhost:44395/api/Users/null - 400 - application/problem+json;+charset=utf-8 9.2326ms
+2025-06-18 19:02:19.1553 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/Home.html - - -
+2025-06-18 19:02:19.1675 | INFO | Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware | The file /Home.html was not modified
+2025-06-18 19:02:19.1675 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/Home.html - 304 - text/html 12.6429ms
+2025-06-18 19:02:19.1783 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/_framework/aspnetcore-browser-refresh.js - - -
+2025-06-18 19:02:19.1783 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/_framework/aspnetcore-browser-refresh.js - 200 16509 application/javascript;+charset=utf-8 0.9505ms
+2025-06-18 19:02:28.5995 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 PUT https://localhost:44395/api/Users/null - application/json 85
+2025-06-18 19:02:28.5995 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:02:28.5995 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Put", controller = "Users"}. Executing controller action with signature Void Put(Int32, Entities.User) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 19:02:28.5995 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor | Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2025-06-18 19:02:28.5995 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi) in 6.5224ms
+2025-06-18 19:02:28.5995 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:02:28.5995 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 PUT https://localhost:44395/api/Users/null - 400 - application/problem+json;+charset=utf-8 8.5837ms
+2025-06-18 19:02:44.8508 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 POST https://localhost:44395/api/Users/login - application/json 40
+2025-06-18 19:02:44.8508 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Login (MyShopWebApi)'
+2025-06-18 19:02:44.8508 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Login", controller = "Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[Dto.UserDTO]] Login(Dto.UserLoginDTO) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 19:02:45.0342 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (7ms) [Parameters=[@__userName_0='?' (Size = 50)], CommandType='Text', CommandTimeout='30']
+SELECT TOP(1) [u].[ID], [u].[first_name], [u].[last_name], [u].[password], [u].[user_name]
+FROM [Users] AS [u]
+WHERE [u].[user_name] = @__userName_0
+2025-06-18 19:02:45.0342 | INFO | MyShopWebApi.Controllers.UsersController | login aaa                                               
+2025-06-18 19:02:45.0342 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor | Executing OkObjectResult, writing value of type 'Dto.UserDTO'.
+2025-06-18 19:02:45.0342 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Login (MyShopWebApi) in 188.3618ms
+2025-06-18 19:02:45.0342 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Login (MyShopWebApi)'
+2025-06-18 19:02:45.0342 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 POST https://localhost:44395/api/Users/login - 200 - application/json;+charset=utf-8 192.6629ms
+2025-06-18 19:02:52.6707 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 PUT https://localhost:44395/api/Users/1 - application/json 84
+2025-06-18 19:02:52.6707 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:02:52.6707 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Put", controller = "Users"}. Executing controller action with signature Void Put(Int32, Entities.User) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 19:02:52.6967 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi) in 24.0559ms
+2025-06-18 19:02:52.6967 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:02:52.7151 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 PUT https://localhost:44395/api/Users/1 - 200 - - 44.5008ms
+2025-06-18 19:02:52.7391 | ERROR | Microsoft.EntityFrameworkCore.Database.Command | Failed executing DbCommand (23ms) [Parameters=[@p4='?' (DbType = Int32), @p0='?' (Size = 50), @p1='?' (Size = 50), @p2='?' (Size = 50), @p3='?' (Size = 50)], CommandType='Text', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+UPDATE [Users] SET [first_name] = @p0, [last_name] = @p1, [password] = @p2, [user_name] = @p3
+OUTPUT 1
+WHERE [ID] = @p4;
+2025-06-18 19:02:59.1364 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 PUT https://localhost:44395/api/Users/1 - application/json 84
+2025-06-18 19:02:59.1364 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:02:59.1364 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Put", controller = "Users"}. Executing controller action with signature Void Put(Int32, Entities.User) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 19:02:59.1500 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi) in 12.9738ms
+2025-06-18 19:02:59.1500 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:02:59.1500 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 PUT https://localhost:44395/api/Users/1 - 200 - - 15.7681ms
+2025-06-18 19:02:59.1663 | ERROR | Microsoft.EntityFrameworkCore.Database.Connection | An error occurred using the connection to database 'MyShop' on server '(localdb)\mssqllocaldb'.
+2025-06-18 19:11:22.5821 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/_framework/aspnetcore-browser-refresh.js - - -
+2025-06-18 19:11:22.6691 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/_framework/aspnetcore-browser-refresh.js - 200 16509 application/javascript;+charset=utf-8 91.6884ms
+2025-06-18 19:11:22.6804 | INFO | Microsoft.Hosting.Lifetime | Application started. Press Ctrl+C to shut down.
+2025-06-18 19:11:22.6804 | INFO | Microsoft.Hosting.Lifetime | Hosting environment: Development
+2025-06-18 19:11:22.6900 | INFO | Microsoft.Hosting.Lifetime | Content root path: C:\Users\User\Downloads\WebApi\MyShopWebApi
+2025-06-18 19:11:22.6900 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/favicon.ico - - -
+2025-06-18 19:11:22.7909 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/favicon.ico - 404 - - 90.4129ms
+2025-06-18 19:11:22.7909 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:44395/favicon.ico, Response status code: 404
+2025-06-18 19:11:41.8710 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 POST https://localhost:44395/api/Users/login - application/json 40
+2025-06-18 19:11:41.8788 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Login (MyShopWebApi)'
+2025-06-18 19:11:41.9047 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Login", controller = "Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[Dto.UserDTO]] Login(Dto.UserLoginDTO) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 19:11:42.9675 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (35ms) [Parameters=[@__userName_0='?' (Size = 50)], CommandType='Text', CommandTimeout='30']
+SELECT TOP(1) [u].[ID], [u].[first_name], [u].[last_name], [u].[password], [u].[user_name]
+FROM [Users] AS [u]
+WHERE [u].[user_name] = @__userName_0
+2025-06-18 19:11:43.0306 | INFO | MyShopWebApi.Controllers.UsersController | login aaa                                               
+2025-06-18 19:11:43.0364 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor | Executing OkObjectResult, writing value of type 'Dto.UserDTO'.
+2025-06-18 19:11:43.0364 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Login (MyShopWebApi) in 1136.3557ms
+2025-06-18 19:11:43.0364 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Login (MyShopWebApi)'
+2025-06-18 19:11:43.0596 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 POST https://localhost:44395/api/Users/login - 200 - application/json;+charset=utf-8 1188.8482ms
+2025-06-18 19:12:09.5666 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 PUT https://localhost:44395/api/Users/1 - application/json 84
+2025-06-18 19:12:09.5831 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:12:09.5831 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Put", controller = "Users"}. Executing controller action with signature Void Put(Int32, Entities.User) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 19:12:09.7104 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT [u].[ID], [u].[first_name], [u].[last_name], [u].[password], [u].[user_name]
+FROM [Users] AS [u]
+2025-06-18 19:12:10.0411 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi) in 453.6728ms
+2025-06-18 19:12:10.0411 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:12:10.0411 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 PUT https://localhost:44395/api/Users/1 - 200 - - 475.2443ms
+2025-06-18 19:12:46.5284 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 PUT https://localhost:44395/api/Users/1 - application/json 86
+2025-06-18 19:12:46.5284 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:12:46.5284 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Put", controller = "Users"}. Executing controller action with signature Void Put(Int32, Entities.User) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 19:12:46.6233 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT [u].[ID], [u].[first_name], [u].[last_name], [u].[password], [u].[user_name]
+FROM [Users] AS [u]
+2025-06-18 19:12:46.7447 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi) in 214.5012ms
+2025-06-18 19:12:46.7447 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:12:46.7447 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 PUT https://localhost:44395/api/Users/1 - 200 - - 216.9248ms
+2025-06-18 19:13:43.2859 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 POST https://localhost:44395/api/Users/checkPassword - application/json 10
+2025-06-18 19:13:43.2859 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.CheckPassword (MyShopWebApi)'
+2025-06-18 19:13:43.3238 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "CheckPassword", controller = "Users"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult`1[System.Int32] CheckPassword(System.String) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 19:13:43.4284 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor | Executing OkObjectResult, writing value of type 'System.Int32'.
+2025-06-18 19:13:43.4284 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.CheckPassword (MyShopWebApi) in 106.8434ms
+2025-06-18 19:13:43.4284 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.CheckPassword (MyShopWebApi)'
+2025-06-18 19:13:43.4284 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 POST https://localhost:44395/api/Users/checkPassword - 200 - application/json;+charset=utf-8 145.5776ms
+2025-06-18 19:13:43.4410 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 POST https://localhost:44395/api/Users/register - application/json 75
+2025-06-18 19:13:43.4806 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Register (MyShopWebApi)'
+2025-06-18 19:13:43.4806 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Register", controller = "Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[Dto.UserDTO]] Register(Dto.UserRegisterDTO) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 19:13:43.5234 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT [u].[ID], [u].[first_name], [u].[last_name], [u].[password], [u].[user_name]
+FROM [Users] AS [u]
+2025-06-18 19:13:43.6313 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (7ms) [Parameters=[@p0='?' (Size = 50), @p1='?' (Size = 50), @p2='?' (Size = 50), @p3='?' (Size = 50)], CommandType='Text', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Users] ([first_name], [last_name], [password], [user_name])
+OUTPUT INSERTED.[ID]
+VALUES (@p0, @p1, @p2, @p3);
+2025-06-18 19:13:43.6479 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor | Executing OkObjectResult, writing value of type 'Dto.UserDTO'.
+2025-06-18 19:13:43.6479 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Register (MyShopWebApi) in 163.7041ms
+2025-06-18 19:13:43.6479 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Register (MyShopWebApi)'
+2025-06-18 19:13:43.6479 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 POST https://localhost:44395/api/Users/register - 200 - application/json;+charset=utf-8 211.6592ms
+2025-06-18 19:14:03.5810 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/Home.html - - -
+2025-06-18 19:14:03.7106 | INFO | Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware | The file /Home.html was not modified
+2025-06-18 19:14:03.7106 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/Home.html - 304 - text/html 131.8561ms
+2025-06-18 19:14:03.7447 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/Home.js - - -
+2025-06-18 19:14:03.7897 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/_framework/aspnetcore-browser-refresh.js - - -
+2025-06-18 19:14:03.7897 | INFO | Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware | The file /Home.js was not modified
+2025-06-18 19:14:03.7897 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/Home.js - 304 - text/javascript 45.5598ms
+2025-06-18 19:14:03.7897 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/_framework/aspnetcore-browser-refresh.js - 200 16509 application/javascript;+charset=utf-8 1.3869ms
+2025-06-18 19:14:26.1544 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 PUT https://localhost:44395/api/Users/1 - application/json 84
+2025-06-18 19:14:26.1591 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:14:26.1591 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Put", controller = "Users"}. Executing controller action with signature Void Put(Int32, Entities.User) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 19:14:26.1591 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT [u].[ID], [u].[first_name], [u].[last_name], [u].[password], [u].[user_name]
+FROM [Users] AS [u]
+2025-06-18 19:14:26.2945 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi) in 135.0332ms
+2025-06-18 19:14:26.2945 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:14:26.2945 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 PUT https://localhost:44395/api/Users/1 - 200 - - 141.1119ms
+2025-06-18 19:15:24.1892 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 POST https://localhost:44395/api/Users/login - application/json 40
+2025-06-18 19:15:24.1892 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Login (MyShopWebApi)'
+2025-06-18 19:15:24.1899 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Login", controller = "Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[Dto.UserDTO]] Login(Dto.UserLoginDTO) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 19:15:24.1899 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (1ms) [Parameters=[@__userName_0='?' (Size = 50)], CommandType='Text', CommandTimeout='30']
+SELECT TOP(1) [u].[ID], [u].[first_name], [u].[last_name], [u].[password], [u].[user_name]
+FROM [Users] AS [u]
+WHERE [u].[user_name] = @__userName_0
+2025-06-18 19:15:24.1899 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor | Executing ObjectResult, writing value of type 'System.String'.
+2025-06-18 19:15:24.1899 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Login (MyShopWebApi) in 13.7849ms
+2025-06-18 19:15:24.1899 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Login (MyShopWebApi)'
+2025-06-18 19:15:24.2042 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 POST https://localhost:44395/api/Users/login - 400 - text/plain;+charset=utf-8 15.1072ms
+2025-06-18 19:21:44.8549 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/_framework/aspnetcore-browser-refresh.js - - -
+2025-06-18 19:21:44.9990 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/_framework/aspnetcore-browser-refresh.js - 200 16509 application/javascript;+charset=utf-8 153.1503ms
+2025-06-18 19:21:45.0225 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/favicon.ico - - -
+2025-06-18 19:21:45.0225 | INFO | Microsoft.Hosting.Lifetime | Application started. Press Ctrl+C to shut down.
+2025-06-18 19:21:45.0349 | INFO | Microsoft.Hosting.Lifetime | Hosting environment: Development
+2025-06-18 19:21:45.0349 | INFO | Microsoft.Hosting.Lifetime | Content root path: C:\Users\User\Downloads\WebApi\MyShopWebApi
+2025-06-18 19:21:45.1286 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/favicon.ico - 404 - - 106.2199ms
+2025-06-18 19:21:45.1286 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:44395/favicon.ico, Response status code: 404
+2025-06-18 19:21:56.2989 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 POST https://localhost:44395/api/Users/login - application/json 40
+2025-06-18 19:21:56.2989 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Login (MyShopWebApi)'
+2025-06-18 19:21:56.3485 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Login", controller = "Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[Dto.UserDTO]] Login(Dto.UserLoginDTO) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 19:21:58.0099 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (37ms) [Parameters=[@__userName_0='?' (Size = 50)], CommandType='Text', CommandTimeout='30']
+SELECT TOP(1) [u].[ID], [u].[first_name], [u].[last_name], [u].[password], [u].[user_name]
+FROM [Users] AS [u]
+WHERE [u].[user_name] = @__userName_0
+2025-06-18 19:21:58.1248 | INFO | MyShopWebApi.Controllers.UsersController | login aaa                                               
+2025-06-18 19:21:58.1429 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor | Executing OkObjectResult, writing value of type 'Dto.UserDTO'.
+2025-06-18 19:21:58.1573 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Login (MyShopWebApi) in 1802.8872ms
+2025-06-18 19:21:58.1573 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Login (MyShopWebApi)'
+2025-06-18 19:21:58.1738 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 POST https://localhost:44395/api/Users/login - 200 - application/json;+charset=utf-8 1875.1535ms
+2025-06-18 19:22:27.1195 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 PUT https://localhost:44395/api/Users/1 - application/json 84
+2025-06-18 19:22:27.1376 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:22:27.1434 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Put", controller = "Users"}. Executing controller action with signature Void Put(Int32, Entities.User) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 19:22:27.2902 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT [u].[ID], [u].[first_name], [u].[last_name], [u].[password], [u].[user_name]
+FROM [Users] AS [u]
+2025-06-18 19:22:27.3952 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (9ms) [Parameters=[@p4='?' (DbType = Int32), @p0='?' (Size = 50), @p1='?' (Size = 50), @p2='?' (Size = 50), @p3='?' (Size = 50)], CommandType='Text', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+UPDATE [Users] SET [first_name] = @p0, [last_name] = @p1, [password] = @p2, [user_name] = @p3
+OUTPUT 1
+WHERE [ID] = @p4;
+2025-06-18 19:22:27.3952 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi) in 256.6242ms
+2025-06-18 19:22:27.3952 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:22:27.4083 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 PUT https://localhost:44395/api/Users/1 - 200 - - 289.4968ms
+2025-06-18 19:24:11.0720 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 PUT https://localhost:44395/api/Users/1 - application/json 84
+2025-06-18 19:24:11.0720 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:24:11.0720 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Put", controller = "Users"}. Executing controller action with signature Void Put(Int32, Entities.User) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 19:24:11.1674 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT [u].[ID], [u].[first_name], [u].[last_name], [u].[password], [u].[user_name]
+FROM [Users] AS [u]
+2025-06-18 19:24:11.2630 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi) in 190.0802ms
+2025-06-18 19:24:11.2630 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:24:11.2630 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 PUT https://localhost:44395/api/Users/1 - 200 - - 192.1373ms
+2025-06-18 19:25:35.0591 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 PUT https://localhost:44395/api/Users/1 - application/json 87
+2025-06-18 19:25:35.0591 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:25:35.0999 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Put", controller = "Users"}. Executing controller action with signature Void Put(Int32, Entities.User) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 19:25:35.1372 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT [u].[ID], [u].[first_name], [u].[last_name], [u].[password], [u].[user_name]
+FROM [Users] AS [u]
+2025-06-18 19:25:35.1702 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi) in 39.5571ms
+2025-06-18 19:25:35.1702 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:25:35.1702 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 PUT https://localhost:44395/api/Users/1 - 200 - - 111.9510ms
+2025-06-18 19:52:45.3799 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/Home.html - - -
+2025-06-18 19:52:45.6399 | INFO | Microsoft.Hosting.Lifetime | Application started. Press Ctrl+C to shut down.
+2025-06-18 19:52:45.6639 | INFO | Microsoft.Hosting.Lifetime | Hosting environment: Development
+2025-06-18 19:52:45.6639 | INFO | Microsoft.Hosting.Lifetime | Content root path: C:\Users\User\Downloads\WebApi\MyShopWebApi
+2025-06-18 19:52:45.9478 | INFO | Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware | The file /Home.html was not modified
+2025-06-18 19:52:45.9964 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/Home.js - - -
+2025-06-18 19:52:45.9964 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/_framework/aspnetcore-browser-refresh.js - - -
+2025-06-18 19:52:46.0186 | INFO | Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware | The file /Home.js was not modified
+2025-06-18 19:52:46.0186 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/Home.html - 304 - text/html 647.6065ms
+2025-06-18 19:52:46.0186 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/Home.js - 304 - text/javascript 23.5293ms
+2025-06-18 19:52:46.0350 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/_framework/aspnetcore-browser-refresh.js - 200 16509 application/javascript;+charset=utf-8 37.8562ms
+2025-06-18 19:52:46.0945 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/favicon.ico - - -
+2025-06-18 19:52:46.1030 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/favicon.ico - 404 - - 8.5663ms
+2025-06-18 19:52:46.1030 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:44395/favicon.ico, Response status code: 404
+2025-06-18 19:53:12.0026 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 PUT https://localhost:44395/api/Users/1 - application/json 84
+2025-06-18 19:53:12.0425 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:53:12.1022 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Put", controller = "Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Put(Int32, Entities.User) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 19:53:13.4037 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (18ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT [u].[ID], [u].[first_name], [u].[last_name], [u].[password], [u].[user_name]
+FROM [Users] AS [u]
+2025-06-18 19:53:13.6653 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor | Executing BadRequestObjectResult, writing value of type 'System.String'.
+2025-06-18 19:53:13.6653 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi) in 1564.1537ms
+2025-06-18 19:53:13.6653 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:53:13.6812 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 PUT https://localhost:44395/api/Users/1 - 400 - text/plain;+charset=utf-8 1679.0890ms
+2025-06-18 19:53:21.6600 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 PUT https://localhost:44395/api/Users/1 - application/json 84
+2025-06-18 19:53:21.6600 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:53:21.6600 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Put", controller = "Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Put(Int32, Entities.User) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 19:53:21.7491 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT [u].[ID], [u].[first_name], [u].[last_name], [u].[password], [u].[user_name]
+FROM [Users] AS [u]
+2025-06-18 19:53:21.8809 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (39ms) [Parameters=[@p4='?' (DbType = Int32), @p0='?' (Size = 50), @p1='?' (Size = 50), @p2='?' (Size = 50), @p3='?' (Size = 50)], CommandType='Text', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+UPDATE [Users] SET [first_name] = @p0, [last_name] = @p1, [password] = @p2, [user_name] = @p3
+OUTPUT 1
+WHERE [ID] = @p4;
+2025-06-18 19:53:21.8997 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor | Executing OkObjectResult, writing value of type 'System.String'.
+2025-06-18 19:53:21.8997 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi) in 233.5742ms
+2025-06-18 19:53:21.8997 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:53:21.8997 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 PUT https://localhost:44395/api/Users/1 - 200 - text/plain;+charset=utf-8 243.2549ms
+2025-06-18 19:57:59.6789 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/_framework/aspnetcore-browser-refresh.js - - -
+2025-06-18 19:57:59.7609 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/_framework/aspnetcore-browser-refresh.js - 200 16509 application/javascript;+charset=utf-8 74.4181ms
+2025-06-18 19:57:59.7760 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/favicon.ico - - -
+2025-06-18 19:57:59.7760 | INFO | Microsoft.Hosting.Lifetime | Application started. Press Ctrl+C to shut down.
+2025-06-18 19:57:59.8099 | INFO | Microsoft.Hosting.Lifetime | Hosting environment: Development
+2025-06-18 19:57:59.8099 | INFO | Microsoft.Hosting.Lifetime | Content root path: C:\Users\User\Downloads\WebApi\MyShopWebApi
+2025-06-18 19:57:59.8918 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/favicon.ico - 404 - - 115.9831ms
+2025-06-18 19:57:59.8931 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:44395/favicon.ico, Response status code: 404
+2025-06-18 19:58:15.4671 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 PUT https://localhost:44395/api/Users/1 - application/json 84
+2025-06-18 19:58:15.4821 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:58:15.5976 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Put", controller = "Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Put(Int32, Entities.User) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 19:58:18.1346 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (32ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT [u].[ID], [u].[first_name], [u].[last_name], [u].[password], [u].[user_name]
+FROM [Users] AS [u]
+2025-06-18 19:58:18.4759 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor | Executing BadRequestObjectResult, writing value of type 'System.String'.
+2025-06-18 19:58:18.4964 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi) in 2883.7185ms
+2025-06-18 19:58:18.4964 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:58:18.5144 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 PUT https://localhost:44395/api/Users/1 - 400 - text/plain;+charset=utf-8 3048.0114ms
+2025-06-18 19:58:19.8639 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 PUT https://localhost:44395/api/Users/1 - application/json 84
+2025-06-18 19:58:19.8639 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:58:19.8639 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Put", controller = "Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Put(Int32, Entities.User) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 19:58:19.9313 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT [u].[ID], [u].[first_name], [u].[last_name], [u].[password], [u].[user_name]
+FROM [Users] AS [u]
+2025-06-18 19:58:20.0805 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor | Executing BadRequestObjectResult, writing value of type 'System.String'.
+2025-06-18 19:58:20.0805 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi) in 211.1424ms
+2025-06-18 19:58:20.0805 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:58:20.0805 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 PUT https://localhost:44395/api/Users/1 - 400 - text/plain;+charset=utf-8 220.3579ms
+2025-06-18 19:58:42.7636 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/_framework/aspnetcore-browser-refresh.js - - -
+2025-06-18 19:58:42.8248 | INFO | Microsoft.Hosting.Lifetime | Application started. Press Ctrl+C to shut down.
+2025-06-18 19:58:42.8688 | INFO | Microsoft.Hosting.Lifetime | Hosting environment: Development
+2025-06-18 19:58:42.8688 | INFO | Microsoft.Hosting.Lifetime | Content root path: C:\Users\User\Downloads\WebApi\MyShopWebApi
+2025-06-18 19:58:42.8688 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/favicon.ico - - -
+2025-06-18 19:58:42.8939 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/_framework/aspnetcore-browser-refresh.js - 200 16509 application/javascript;+charset=utf-8 68.6783ms
+2025-06-18 19:58:42.9585 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/favicon.ico - 404 - - 84.8469ms
+2025-06-18 19:58:42.9585 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:44395/favicon.ico, Response status code: 404
+2025-06-18 19:59:17.3288 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/_framework/aspnetcore-browser-refresh.js - - -
+2025-06-18 19:59:17.3991 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/_framework/aspnetcore-browser-refresh.js - 200 16509 application/javascript;+charset=utf-8 64.9753ms
+2025-06-18 19:59:17.4178 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/favicon.ico - - -
+2025-06-18 19:59:17.4599 | INFO | Microsoft.Hosting.Lifetime | Application started. Press Ctrl+C to shut down.
+2025-06-18 19:59:17.4599 | INFO | Microsoft.Hosting.Lifetime | Hosting environment: Development
+2025-06-18 19:59:17.4599 | INFO | Microsoft.Hosting.Lifetime | Content root path: C:\Users\User\Downloads\WebApi\MyShopWebApi
+2025-06-18 19:59:17.5427 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/favicon.ico - 404 - - 125.2546ms
+2025-06-18 19:59:17.5427 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:44395/favicon.ico, Response status code: 404
+2025-06-18 19:59:31.1342 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 POST https://localhost:44395/api/Users/login - application/json 40
+2025-06-18 19:59:31.1434 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Login (MyShopWebApi)'
+2025-06-18 19:59:31.2114 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Login", controller = "Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[Dto.UserDTO]] Login(Dto.UserLoginDTO) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 19:59:34.1029 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (86ms) [Parameters=[@__userName_0='?' (Size = 50)], CommandType='Text', CommandTimeout='30']
+SELECT TOP(1) [u].[ID], [u].[first_name], [u].[last_name], [u].[password], [u].[user_name]
+FROM [Users] AS [u]
+WHERE [u].[user_name] = @__userName_0
+2025-06-18 19:59:34.2743 | INFO | MyShopWebApi.Controllers.UsersController | login ggg                                               
+2025-06-18 19:59:34.2877 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor | Executing OkObjectResult, writing value of type 'Dto.UserDTO'.
+2025-06-18 19:59:34.3139 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Login (MyShopWebApi) in 3088.6254ms
+2025-06-18 19:59:34.3148 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Login (MyShopWebApi)'
+2025-06-18 19:59:34.3379 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 POST https://localhost:44395/api/Users/login - 200 - application/json;+charset=utf-8 3203.8236ms
+2025-06-18 19:59:53.0120 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 PUT https://localhost:44395/api/Users/1 - application/json 84
+2025-06-18 19:59:53.0198 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:59:53.0198 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Put", controller = "Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Put(Int32, Entities.User) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 19:59:53.1850 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (7ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT [u].[ID], [u].[first_name], [u].[last_name], [u].[password], [u].[user_name]
+FROM [Users] AS [u]
+2025-06-18 19:59:53.4064 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor | Executing BadRequestObjectResult, writing value of type 'System.String'.
+2025-06-18 19:59:53.4081 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi) in 377.0068ms
+2025-06-18 19:59:53.4081 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:59:53.4081 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 PUT https://localhost:44395/api/Users/1 - 400 - text/plain;+charset=utf-8 397.1395ms
+2025-06-18 19:59:56.2793 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 PUT https://localhost:44395/api/Users/1 - application/json 84
+2025-06-18 19:59:56.2793 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:59:56.2793 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Put", controller = "Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Put(Int32, Entities.User) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 19:59:56.4006 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT [u].[ID], [u].[first_name], [u].[last_name], [u].[password], [u].[user_name]
+FROM [Users] AS [u]
+2025-06-18 19:59:56.4768 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor | Executing BadRequestObjectResult, writing value of type 'System.String'.
+2025-06-18 19:59:56.4768 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi) in 195.5696ms
+2025-06-18 19:59:56.4768 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 19:59:56.4768 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 PUT https://localhost:44395/api/Users/1 - 400 - text/plain;+charset=utf-8 198.7508ms
+2025-06-18 19:59:58.9611 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/.well-known/appspecific/com.chrome.devtools.json - - -
+2025-06-18 19:59:58.9611 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/.well-known/appspecific/com.chrome.devtools.json - 404 - - 4.1690ms
+2025-06-18 19:59:58.9611 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:44395/.well-known/appspecific/com.chrome.devtools.json, Response status code: 404
+2025-06-18 20:00:13.7639 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 PUT https://localhost:44395/api/Users/1 - application/json 84
+2025-06-18 20:00:13.7639 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 20:00:13.7639 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Put", controller = "Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Put(Int32, Entities.User) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 20:00:13.7785 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT [u].[ID], [u].[first_name], [u].[last_name], [u].[password], [u].[user_name]
+FROM [Users] AS [u]
+2025-06-18 20:00:13.9764 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (13ms) [Parameters=[@p4='?' (DbType = Int32), @p0='?' (Size = 50), @p1='?' (Size = 50), @p2='?' (Size = 50), @p3='?' (Size = 50)], CommandType='Text', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+UPDATE [Users] SET [first_name] = @p0, [last_name] = @p1, [password] = @p2, [user_name] = @p3
+OUTPUT 1
+WHERE [ID] = @p4;
+2025-06-18 20:00:14.0072 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor | Executing OkObjectResult, writing value of type 'System.String'.
+2025-06-18 20:00:14.0072 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi) in 242.2122ms
+2025-06-18 20:00:14.0072 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 20:00:14.0072 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 PUT https://localhost:44395/api/Users/1 - 200 - text/plain;+charset=utf-8 245.2727ms
+2025-06-18 20:00:35.5575 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/_framework/aspnetcore-browser-refresh.js - - -
+2025-06-18 20:00:35.6344 | INFO | Microsoft.Hosting.Lifetime | Application started. Press Ctrl+C to shut down.
+2025-06-18 20:00:35.6448 | INFO | Microsoft.Hosting.Lifetime | Hosting environment: Development
+2025-06-18 20:00:35.6448 | INFO | Microsoft.Hosting.Lifetime | Content root path: C:\Users\User\Downloads\WebApi\MyShopWebApi
+2025-06-18 20:00:35.6448 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/favicon.ico - - -
+2025-06-18 20:00:35.6757 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/_framework/aspnetcore-browser-refresh.js - 200 16509 application/javascript;+charset=utf-8 80.7953ms
+2025-06-18 20:00:35.7750 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/favicon.ico - 404 - - 124.2985ms
+2025-06-18 20:00:35.7750 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:44395/favicon.ico, Response status code: 404
+2025-06-18 20:01:01.0317 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 POST https://localhost:44395/api/Users/login - application/json 40
+2025-06-18 20:01:01.0680 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Login (MyShopWebApi)'
+2025-06-18 20:01:01.1333 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Login", controller = "Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[Dto.UserDTO]] Login(Dto.UserLoginDTO) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 20:01:03.9439 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (64ms) [Parameters=[@__userName_0='?' (Size = 50)], CommandType='Text', CommandTimeout='30']
+SELECT TOP(1) [u].[ID], [u].[first_name], [u].[last_name], [u].[password], [u].[user_name]
+FROM [Users] AS [u]
+WHERE [u].[user_name] = @__userName_0
+2025-06-18 20:01:04.0702 | INFO | MyShopWebApi.Controllers.UsersController | login hhh                                               
+2025-06-18 20:01:04.0825 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor | Executing OkObjectResult, writing value of type 'Dto.UserDTO'.
+2025-06-18 20:01:04.1007 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Login (MyShopWebApi) in 2958.9876ms
+2025-06-18 20:01:04.1007 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Login (MyShopWebApi)'
+2025-06-18 20:01:04.1125 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 POST https://localhost:44395/api/Users/login - 200 - application/json;+charset=utf-8 3080.8833ms
+2025-06-18 20:01:15.4482 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 PUT https://localhost:44395/api/Users/1 - application/json 84
+2025-06-18 20:01:15.4622 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 20:01:15.4887 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Put", controller = "Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Put(Int32, Entities.User) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 20:01:15.6228 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (9ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT [u].[ID], [u].[first_name], [u].[last_name], [u].[password], [u].[user_name]
+FROM [Users] AS [u]
+2025-06-18 20:01:15.9234 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor | Executing BadRequestObjectResult, writing value of type 'System.String'.
+2025-06-18 20:01:15.9234 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi) in 436.0644ms
+2025-06-18 20:01:15.9234 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 20:01:15.9234 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 PUT https://localhost:44395/api/Users/1 - 400 - text/plain;+charset=utf-8 478.9085ms
+2025-06-18 20:01:33.6563 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 PUT https://localhost:44395/api/Users/1 - application/json 84
+2025-06-18 20:01:33.6563 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 20:01:33.6589 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Put", controller = "Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Put(Int32, Entities.User) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 20:01:33.8232 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT [u].[ID], [u].[first_name], [u].[last_name], [u].[password], [u].[user_name]
+FROM [Users] AS [u]
+2025-06-18 20:01:33.9144 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor | Executing BadRequestObjectResult, writing value of type 'System.String'.
+2025-06-18 20:01:33.9144 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi) in 255.9301ms
+2025-06-18 20:01:33.9144 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 20:01:33.9144 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 PUT https://localhost:44395/api/Users/1 - 400 - text/plain;+charset=utf-8 259.5746ms
+2025-06-18 20:04:55.7461 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/_framework/aspnetcore-browser-refresh.js - - -
+2025-06-18 20:04:55.8305 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/_framework/aspnetcore-browser-refresh.js - 200 16509 application/javascript;+charset=utf-8 81.7302ms
+2025-06-18 20:04:55.8305 | INFO | Microsoft.Hosting.Lifetime | Application started. Press Ctrl+C to shut down.
+2025-06-18 20:04:55.8305 | INFO | Microsoft.Hosting.Lifetime | Hosting environment: Development
+2025-06-18 20:04:55.8692 | INFO | Microsoft.Hosting.Lifetime | Content root path: C:\Users\User\Downloads\WebApi\MyShopWebApi
+2025-06-18 20:04:55.9053 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/favicon.ico - - -
+2025-06-18 20:04:56.0144 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/favicon.ico - 404 - - 109.5719ms
+2025-06-18 20:04:56.0202 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:44395/favicon.ico, Response status code: 404
+2025-06-18 20:05:23.1393 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 POST https://localhost:44395/api/Users/login - application/json 40
+2025-06-18 20:05:23.1988 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Login (MyShopWebApi)'
+2025-06-18 20:05:23.3129 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Login", controller = "Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[Dto.UserDTO]] Login(Dto.UserLoginDTO) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 20:05:28.2995 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (151ms) [Parameters=[@__userName_0='?' (Size = 50)], CommandType='Text', CommandTimeout='30']
+SELECT TOP(1) [u].[ID], [u].[first_name], [u].[last_name], [u].[password], [u].[user_name]
+FROM [Users] AS [u]
+WHERE [u].[user_name] = @__userName_0
+2025-06-18 20:05:28.5677 | INFO | MyShopWebApi.Controllers.UsersController | login hhh                                               
+2025-06-18 20:05:28.5968 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor | Executing OkObjectResult, writing value of type 'Dto.UserDTO'.
+2025-06-18 20:05:28.6317 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Login (MyShopWebApi) in 5302.7838ms
+2025-06-18 20:05:28.6317 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Login (MyShopWebApi)'
+2025-06-18 20:05:28.6590 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 POST https://localhost:44395/api/Users/login - 200 - application/json;+charset=utf-8 5519.8216ms
+2025-06-18 20:05:43.3697 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 PUT https://localhost:44395/api/Users/1 - application/json 84
+2025-06-18 20:05:43.3828 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 20:05:43.4069 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Put", controller = "Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Put(Int32, Entities.User) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 20:05:43.6024 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (10ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT [u].[ID], [u].[first_name], [u].[last_name], [u].[password], [u].[user_name]
+FROM [Users] AS [u]
+2025-06-18 20:05:44.1049 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor | Executing BadRequestObjectResult, writing value of type 'System.String'.
+2025-06-18 20:05:44.1049 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi) in 699.9836ms
+2025-06-18 20:05:44.1049 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 20:05:44.1049 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 PUT https://localhost:44395/api/Users/1 - 400 - text/plain;+charset=utf-8 739.3728ms
+2025-06-18 20:05:55.4288 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/Home.html - - -
+2025-06-18 20:05:55.5990 | INFO | Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware | The file /Home.html was not modified
+2025-06-18 20:05:55.5990 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/Home.html - 304 - text/html 172.8888ms
+2025-06-18 20:05:55.5990 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/_framework/aspnetcore-browser-refresh.js - - -
+2025-06-18 20:05:55.6119 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/_framework/aspnetcore-browser-refresh.js - 200 16509 application/javascript;+charset=utf-8 1.1175ms
+2025-06-18 20:05:56.7319 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/Home.html - - -
+2025-06-18 20:05:56.7476 | INFO | Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware | The file /Home.html was not modified
+2025-06-18 20:05:56.7476 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/Home.html - 304 - text/html 16.4398ms
+2025-06-18 20:05:56.7565 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/_framework/aspnetcore-browser-refresh.js - - -
+2025-06-18 20:05:56.7565 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/_framework/aspnetcore-browser-refresh.js - 200 16509 application/javascript;+charset=utf-8 1.1092ms
+2025-06-18 20:06:01.5034 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/.well-known/appspecific/com.chrome.devtools.json - - -
+2025-06-18 20:06:01.5034 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/.well-known/appspecific/com.chrome.devtools.json - 404 - - 7.3032ms
+2025-06-18 20:06:01.5034 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:44395/.well-known/appspecific/com.chrome.devtools.json, Response status code: 404
+2025-06-18 20:06:05.2684 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/Home.html - - -
+2025-06-18 20:06:05.3197 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/.well-known/appspecific/com.chrome.devtools.json - - -
+2025-06-18 20:06:05.3197 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/.well-known/appspecific/com.chrome.devtools.json - 404 - - 1.0718ms
+2025-06-18 20:06:05.3197 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:44395/.well-known/appspecific/com.chrome.devtools.json, Response status code: 404
+2025-06-18 20:06:05.3512 | INFO | Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware | Sending file. Request path: '/Home.html'. Physical path: 'C:\Users\User\Downloads\WebApi\MyShopWebApi\wwwroot\Home.html'
+2025-06-18 20:06:05.3512 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/Home.html - 200 - text/html 84.1240ms
+2025-06-18 20:06:05.3512 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/_framework/aspnetcore-browser-refresh.js - - -
+2025-06-18 20:06:05.3512 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/_vs/browserLink - - -
+2025-06-18 20:06:05.3512 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/Home.js - - -
+2025-06-18 20:06:05.3512 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/_framework/aspnetcore-browser-refresh.js - 200 16509 application/javascript;+charset=utf-8 1.0552ms
+2025-06-18 20:06:05.4077 | INFO | Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware | Sending file. Request path: '/Home.js'. Physical path: 'C:\Users\User\Downloads\WebApi\MyShopWebApi\wwwroot\Home.js'
+2025-06-18 20:06:05.4077 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/Home.js - 200 5415 text/javascript 51.3047ms
+2025-06-18 20:06:05.4769 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/_vs/browserLink - 200 - text/javascript;+charset=UTF-8 120.1009ms
+2025-06-18 20:06:05.5010 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 GET https://localhost:44395/favicon.ico - - -
+2025-06-18 20:06:05.5020 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 GET https://localhost:44395/favicon.ico - 404 - - 1.1025ms
+2025-06-18 20:06:05.5020 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:44395/favicon.ico, Response status code: 404
+2025-06-18 20:06:15.5782 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 POST https://localhost:44395/api/Users/login - application/json 40
+2025-06-18 20:06:15.5782 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Login (MyShopWebApi)'
+2025-06-18 20:06:15.5782 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Login", controller = "Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[Dto.UserDTO]] Login(Dto.UserLoginDTO) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 20:06:15.7146 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (10ms) [Parameters=[@__userName_0='?' (Size = 50)], CommandType='Text', CommandTimeout='30']
+SELECT TOP(1) [u].[ID], [u].[first_name], [u].[last_name], [u].[password], [u].[user_name]
+FROM [Users] AS [u]
+WHERE [u].[user_name] = @__userName_0
+2025-06-18 20:06:15.7146 | INFO | MyShopWebApi.Controllers.UsersController | login hhh                                               
+2025-06-18 20:06:15.7146 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor | Executing OkObjectResult, writing value of type 'Dto.UserDTO'.
+2025-06-18 20:06:15.7203 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Login (MyShopWebApi) in 141.2687ms
+2025-06-18 20:06:15.7203 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Login (MyShopWebApi)'
+2025-06-18 20:06:15.7203 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 POST https://localhost:44395/api/Users/login - 200 - application/json;+charset=utf-8 142.5600ms
+2025-06-18 20:06:56.8593 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request starting HTTP/2 PUT https://localhost:44395/api/Users/1 - application/json 84
+2025-06-18 20:06:56.8593 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executing endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 20:06:56.8638 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Route matched with {action = "Put", controller = "Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Put(Int32, Entities.User) on controller MyShopWebApi.Controllers.UsersController (MyShopWebApi).
+2025-06-18 20:06:56.9337 | INFO | Microsoft.EntityFrameworkCore.Database.Command | Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT [u].[ID], [u].[first_name], [u].[last_name], [u].[password], [u].[user_name]
+FROM [Users] AS [u]
+2025-06-18 20:06:57.0997 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor | Executing BadRequestObjectResult, writing value of type 'System.String'.
+2025-06-18 20:06:57.0997 | INFO | Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker | Executed action MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi) in 237.0582ms
+2025-06-18 20:06:57.0997 | INFO | Microsoft.AspNetCore.Routing.EndpointMiddleware | Executed endpoint 'MyShopWebApi.Controllers.UsersController.Put (MyShopWebApi)'
+2025-06-18 20:06:57.0997 | INFO | Microsoft.AspNetCore.Hosting.Diagnostics | Request finished HTTP/2 PUT https://localhost:44395/api/Users/1 - 400 - text/plain;+charset=utf-8 245.0125ms

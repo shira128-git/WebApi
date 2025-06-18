@@ -58,8 +58,20 @@ namespace Services
         }
 
 
+        //public async Task<User> UpDate(User user, int id)
+        //{
+        //    return await _userRepository.UpDate(user, id);
+        //}
         public async Task<User> UpDate(User user, int id)
         {
+            // בדיקת ייחודיות שם משתמש
+            List<User> users = _userRepository.GetUsers();
+            User existingUser = users.FirstOrDefault(u => u.UserName.Trim() == user.UserName.Trim() && u.Id != id);
+            if (existingUser != null)
+            {
+                throw new Exception("User name already exists");
+            }
+
             return await _userRepository.UpDate(user, id);
         }
 

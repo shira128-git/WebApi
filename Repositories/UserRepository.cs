@@ -45,17 +45,33 @@ namespace Repositories
             return userLog;
         }
 
+        //public async Task<User> UpDate(User user, int id)
+        //{
+
+        //    DBcontex.Users.Update(user);
+        //    await DBcontex.SaveChangesAsync();
+
+
+        //    return user;
+
+        //}
+
         public async Task<User> UpDate(User user, int id)
         {
+            var existingUser = await DBcontex.Users.FindAsync(id);
+            if (existingUser == null)
+                throw new Exception("User not found");
 
-            DBcontex.Users.Update(user);
+            // עדכון שדות
+            existingUser.FirstName = user.FirstName;
+            existingUser.LastName = user.LastName;
+            existingUser.UserName = user.UserName;
+            existingUser.Password = user.Password;
+
             await DBcontex.SaveChangesAsync();
-
-         
-            return user;
-        
+            return existingUser;
         }
-       
+
 
 
     }
