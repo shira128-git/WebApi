@@ -22,25 +22,7 @@ namespace MyShopWebApi.Controllers
             _logger = logger;
         }
 
-        // GET: api/<UsersController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET api/<UsersController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST api/<UsersController>
-        [HttpPost]
-        public void Post([FromBody]string value)
-        {
-        }
+   
 
         [HttpPost("register")]
         public async Task<ActionResult<UserDTO>> Register([FromBody] UserRegisterDTO user)
@@ -98,58 +80,7 @@ namespace MyShopWebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        //public void Put(int id, [FromBody]User u)
-        //{
-        //    //User newUser=new User();
+       
 
-        //    //if(u.firstName!=null)
-        //    //{
-        //    //    newUser.firstName = u.firstName;
-        //    //}
-        //    //if (u.lastName != null)
-        //    //{
-        //    //    newUser.lastName = u.lastName;
-        //    //}
-        //    //if (u.password != null)
-        //    //{
-        //    //    newUser.password = u.password;
-        //    //}
-        //    //if (u.userName != null)
-        //    //{
-        //    //    newUser.userName = u.userName;
-        //    //}
-        //    //newUser.userId = id;
-        //    //string filePath = Path.Combine(Directory.GetCurrentDirectory(), "users.txt");
-
-
-        //    //string textToReplace = string.Empty;
-        //    //using (StreamReader reader = System.IO.File.OpenText(filePath))
-        //    //{
-        //    //    string currentUserInFile;
-        //    //    while ((currentUserInFile = reader.ReadLine()) != null)
-        //    //    {
-
-        //    //        User user = JsonSerializer.Deserialize<User>(currentUserInFile);
-        //    //        if (user.userId == id)
-        //    //            textToReplace = currentUserInFile;
-        //    //    }
-        //    //}
-
-        //    //if (textToReplace != string.Empty)
-        //    //{
-        //    //    string text = System.IO.File.ReadAllText(filePath);
-        //    //    text = text.Replace(textToReplace, JsonSerializer.Serialize(newUser));
-        //    //    System.IO.File.WriteAllText(filePath, text);
-        //    //}
-
-        //    _userService.UpDate(u,id);
-
-        //}
-
-        // DELETE api/<UsersController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }

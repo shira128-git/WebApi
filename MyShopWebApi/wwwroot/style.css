@@ -1,0 +1,63 @@
+﻿/* בסיס עיצוב */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Assistant', sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+    /* מיכל מרכזי */
+    body > div, body > form {
+        background-color: white;
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        width: 320px;
+        text-align: center;
+    }
+
+/* כותרת */
+h2 {
+    color: #2c2c2c;
+    margin-bottom: 30px;
+}
+
+/* שדות קלט */
+input {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin: 10px auto;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+/* כפתורים */
+button {
+    width: 100%;
+    padding: 10px;
+    margin: 10px auto;
+    background-color: #3b5d3b; /* ירוק זית כהה */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+    /* אפקט מעבר */
+    button:hover {
+        background-color: #2e4a2e;
+    }
+
+    /* קישור (כפתורים מדומים) */
+    button:focus {
+        outline: none;
+    }
