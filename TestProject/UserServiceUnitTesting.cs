@@ -29,7 +29,7 @@ namespace TestProject
         public void CheckPassword_WeakPassword_ShouldReturnLowStrength()
         {
             // Arrange
-            var password = "weakpass"; // סיסמה חלשה
+            var password = "weakpass";
             var expectedStrength = 1;
             var mockUserService = new Mock<IUserService>();
             mockUserService.Setup(service => service.CheckPassword(password)).Returns(expectedStrength);
@@ -40,6 +40,7 @@ namespace TestProject
             // Assert
             Assert.Equal(expectedStrength, result);
         }
+
 
         
     }

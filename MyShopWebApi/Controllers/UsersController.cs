@@ -22,20 +22,36 @@ namespace MyShopWebApi.Controllers
             _logger = logger;
         }
 
-   
+
 
         [HttpPost("register")]
         public async Task<ActionResult<UserDTO>> Register([FromBody] UserRegisterDTO user)
         {
 
-            UserDTO u = await _userService.Register(user);
-            if (u!=null)
+            if (string.IsNullOrWhiteSpace(user.UserName) || user.UserName.Trim().Length < 3)
+                return BadRequest(new { message = "User name must be at least 3 characters long." });
+
+            if (!string.IsNullOrWhiteSpace(user.FirstName) &&
+                !System.Text.RegularExpressions.Regex.IsMatch(user.FirstName, @"^[a-zA-Zא-ת]+$"))
+                return BadRequest(new { message = "First name must not contain special characters." });
+
+            if (!string.IsNullOrWhiteSpace(user.LastName) &&
+                !System.Text.RegularExpressions.Regex.IsMatch(user.LastName, @"^[a-zA-Zא-ת]+$"))
+                return BadRequest(new { message = "Last name must not contain special characters." });
+
+            try
             {
-                return Ok(u);
+                UserDTO u = await _userService.Register(user);
+                if (u != null)
+                {
+                    return Ok(u);
+                }
+                return BadRequest(new { message = "Registration failed. Please try again." });
             }
-            return StatusCode(400,"try Again");
-
-
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpPost("login")]
@@ -68,11 +84,23 @@ namespace MyShopWebApi.Controllers
 
         // PUT api/<UsersController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] User u)
+        public async Task<IActionResult> Put(int id, [FromBody] User user)
         {
+
+            if (string.IsNullOrWhiteSpace(user.UserName) || user.UserName.Trim().Length < 3)
+                return BadRequest(new { message = "User name must be at least 3 characters long." });
+
+            if (!string.IsNullOrWhiteSpace(user.FirstName) &&
+                !System.Text.RegularExpressions.Regex.IsMatch(user.FirstName, @"^[a-zA-Zא-ת]+$"))
+                return BadRequest(new { message = "First name must not contain special characters." });
+
+            if (!string.IsNullOrWhiteSpace(user.LastName) &&
+                !System.Text.RegularExpressions.Regex.IsMatch(user.LastName, @"^[a-zA-Zא-ת]+$"))
+                return BadRequest(new { message = "Last name must not contain special characters." });
+
             try
             {
-                await _userService.UpDate(u, id);
+                await _userService.UpDate(user, id);
                 return Ok("User updated successfully");
             }
             catch (Exception ex)

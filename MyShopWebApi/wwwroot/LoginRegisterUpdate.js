@@ -1,13 +1,28 @@
-﻿Register = async () => {
+﻿
+
+Register = async () => {
     const userName = document.getElementById("user_name").value;
     const password = document.getElementById("password").value;
     const firstName = document.getElementById("first_name").value;
     const lastName = document.getElementById("last_name").value;
-    if (!userName || !password) {
-        alert("username and password are required");
+    if (!userName || !password || !firstName || !lastName) {
+        alert("All fields are required.");
         return false;
     }
-    const hardPassword = await CheckPassword();
+
+    if (!userName || userName.trim().length < 3) {
+        alert("User name must be at least 3 characters long.");
+        return false;
+    }
+    if (firstName && !/^[a-zA-Zא-ת]+$/.test(firstName)) {
+        alert("First name must not contain special characters.");
+        return false;
+    }
+    if (lastName && !/^[a-zA-Zא-ת]+$/.test(lastName)) {
+        alert("Last name must not contain special characters.");
+        return false;
+    }
+    const hardPassword = await CheckPassword(password);
     if (hardPassword < 2) {
         alert("your password is low....")
         return false;
@@ -29,33 +44,18 @@
             body: JSON.stringify(user)
         });
         if (responsePost.ok) {
-            // אם השרת מחזיר את ה-UserId, שמור אותו
             try {
                 const userDetails = await responsePost.json();
                 if (userDetails && userDetails.id) {
                     localStorage.setItem("UserId", userDetails.id);
                 }
-            } catch (e) {
-                // אם אין גוף תשובה, התעלם
-            }
+            } catch (e) { }
             alert("user registered successfully");
             window.location.href = 'update.html';
             return true;
         } else {
-            switch (responsePost.status) {
-                case 400:
-                    const badRequestData = await responsePost.json();
-                    alert(`Bad request: ${badRequestData.message || 'Invalid input. Please check your data.'}`);
-                    break;
-                case 401:
-                    alert("Unauthorized: Please check your credentials.");
-                    break;
-                case 500:
-                    alert("Server error. Please try again later.");
-                    break;
-                default:
-                    alert(`Unexpected error: ${responsePost.status}`);
-            }
+            const errorObj = await responsePost.json();
+            alert(errorObj.message || "Registration failed. Please try again.");
             return false;
         }
     }
@@ -124,6 +124,30 @@ const UpDate = async () => {
     const password = document.getElementById("password_u").value;
     const username = document.getElementById("user_name_u").value;
 
+    if (!username || !password || !firstname || !lastname) {
+        alert("All fields are required.");
+        return false;
+    }
+
+    if (!username || username.trim().length < 3) {
+        alert("User name must be at least 3 characters long.");
+        return false;
+    }
+    if (firstname && !/^[a-zA-Zא-ת]+$/.test(firstname)) {
+        alert("First name must not contain special characters.");
+        return false;
+    }
+    if (lastname && !/^[a-zA-Zא-ת]+$/.test(lastname)) {
+        alert("Last name must not contain special characters.");
+        return false;
+    }
+    const hardPassword = await CheckPassword(password);
+    if (hardPassword < 2) {
+        alert("your password is low....")
+        return false;
+    }
+
+
     const id = localStorage.getItem("UserId")
 
     const user = {
@@ -154,8 +178,8 @@ const UpDate = async () => {
     }
 }
 
-CheckPassword = async () => {
-    const password = document.getElementById("password").value;
+CheckPassword = async (password) => {
+    //const password = document.getElementById("password").value;
     try {
         const responsePost = await fetch("api/Users/checkPassword", {
             method: 'POST',
