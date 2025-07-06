@@ -20,7 +20,7 @@ namespace Services
         {
             if (CheckPassword(user.Password) < 2)
                 throw new Exception("Password is too weak.");
-            //יתכן שמומלץ לעשות גם כאן ולידציות אך נמנענו מכך כדי להמנע מטסטים נוספים
+            //יתכן שמומלץ לעשות גם כאן ולידציות אך נמנענו מכך כדי להמנע מטסטים נוספים//delete
             //if (user.UserName == null || user.UserName.Trim().Length < 3)
             //    throw new Exception("User name must be at least 3 characters long.");
 
@@ -50,11 +50,11 @@ namespace Services
         {
             User userfound = await _userRepository.Login(user.UserName);
           
-            if (userfound == null)
-            {
-                return null;
-            }
-            if (userfound.Password.Trim() == user.Password)
+            // if (userfound == null)
+            // {
+            //     return null;
+            // }
+            if (userfound?.Password.Trim() == user.Password)
             {
                 return  _mapper.Map<UserDTO>(userfound);
             }

@@ -19,8 +19,8 @@ namespace Repositories
 
             await DBcontex.Orders.AddAsync(order);
             await DBcontex.SaveChangesAsync();
-            return await Task.FromResult(order);
-
+            //return await Task.FromResult(order);
+            return order;
         }
 
     }

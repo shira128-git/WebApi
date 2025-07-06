@@ -16,7 +16,7 @@ namespace Repositories
         {
             DBcontex = _DBcontex;
         }
-
+//delete the commented code
         //public async Task<List<Product>> GetProducts(string? desc, int? minPrice, int? maxPrice, int?[] categoryIds)
         //{
 

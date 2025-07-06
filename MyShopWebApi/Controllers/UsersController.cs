@@ -27,7 +27,6 @@ namespace MyShopWebApi.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<UserDTO>> Register([FromBody] UserRegisterDTO user)
         {
-
             if (string.IsNullOrWhiteSpace(user.UserName) || user.UserName.Trim().Length < 3)
                 return BadRequest(new { message = "User name must be at least 3 characters long." });
 
@@ -47,6 +46,8 @@ namespace MyShopWebApi.Controllers
                     return Ok(u);
                 }
                 return BadRequest(new { message = "Registration failed. Please try again." });
+                //use short syntax for returning ActionResult
+                //return u != null ? Ok(u) : BadRequest("Registration failed. Please try again.");
             }
             catch (Exception ex)
             {
@@ -72,7 +73,7 @@ namespace MyShopWebApi.Controllers
 
 
             int result = _userService.CheckPassword(password);
-        
+        //use short syntax
             if (result>-1)
             {
                 
@@ -86,7 +87,6 @@ namespace MyShopWebApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] User user)
         {
-
             if (string.IsNullOrWhiteSpace(user.UserName) || user.UserName.Trim().Length < 3)
                 return BadRequest(new { message = "User name must be at least 3 characters long." });
 

@@ -22,7 +22,7 @@ namespace Services
         }
         public async Task<OrderDTO> Create(OrderDTO order)
         {
-            var order1 = _mapper.Map<Order>(order);
+            var order1 = _mapper.Map<Order>(order);//clean code - use variable name that is meaningful
             var o = await _orderRepository.Create(order1);
             return _mapper.Map<OrderDTO>(o);
 
