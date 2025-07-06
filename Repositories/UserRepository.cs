@@ -25,15 +25,16 @@ namespace Repositories
 
         public async Task<User> Register(User user)
         {
-            //List<User> users = GetUsers();
-            //user.userId = users.Any() ? users.Max(u => u.userId) + 1 : 1;
-            //System.IO.File.AppendAllText("users.txt", JsonSerializer.Serialize(user) + Environment.NewLine);
+            //List<User> users = GetUsers();//
+            //user.userId = users.Any() ? users.Max(u => u.userId) + 1 : 1;//
+            //System.IO.File.AppendAllText("users.txt", JsonSerializer.Serialize(user) + Environment.NewLine);//
             //return user;
 
             await DBcontex.Users.AddAsync(user);
             await DBcontex.SaveChangesAsync();
-            return await Task.FromResult(user);
-
+            // No need to use Task.FromResult here because the method is already async. Just return the user directly.
+            // return await Task.FromResult(user);
+            return user;
         }
 
 
@@ -45,7 +46,7 @@ namespace Repositories
             return userLog;
         }
 
-        //public async Task<User> UpDate(User user, int id)
+        //public async Task<User> UpDate(User user, int id) - delete 
         //{
 
         //    DBcontex.Users.Update(user);
@@ -58,16 +59,16 @@ namespace Repositories
 
         public async Task<User> UpDate(User user, int id)
         {
-            var existingUser = await DBcontex.Users.FindAsync(id);
-            if (existingUser == null)
-                throw new Exception("User not found");
+            // var existingUser = await DBcontex.Users.FindAsync(id);
+            // if (existingUser == null)
+            //     throw new Exception("User not found");
 
-            // עדכון שדות
-            existingUser.FirstName = user.FirstName;
-            existingUser.LastName = user.LastName;
-            existingUser.UserName = user.UserName;
-            existingUser.Password = user.Password;
-
+            // // עדכון שדות
+            // existingUser.FirstName = user.FirstName;
+            // existingUser.LastName = user.LastName;
+            // existingUser.UserName = user.UserName;
+            // existingUser.Password = user.Password;
+            DBcontex.Users.Update(existingUser);
             await DBcontex.SaveChangesAsync();
             return existingUser;
         }

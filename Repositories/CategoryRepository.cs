@@ -10,10 +10,10 @@ namespace Repositories
 {
     public class CategoryRepository : ICategoryRepository
     {
-        ShopContext DBcontex;
+        ShopContext DBcontex;//_dBcontex - change in all the repositories
         public CategoryRepository(ShopContext _DBcontex)
         {
-            DBcontex = _DBcontex;
+            DBcontex = _DBcontex;//_dBcontex = dBcontex
         }
 
         public async Task<List<Category>> GetCategories()

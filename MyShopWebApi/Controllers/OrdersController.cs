@@ -2,8 +2,12 @@
 using Entities;
 using Microsoft.AspNetCore.Mvc;
 using Services;
+//In all the controllers - notice:
+//1.delete comments 
+//2.clean code - change the names of the methods to be more descriptive-  change in all the layers
+//3.use short syntax for returning ActionResult
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860//
 
 namespace MyShopWebApi.Controllers
 {
@@ -18,10 +22,10 @@ namespace MyShopWebApi.Controllers
         {
             _orderService = orderService;
         }
-     
-   
 
-        // POST api/<OrdersController>
+
+
+        // POST api/<OrdersController>//
         [HttpPost]
         public async Task<ActionResult<OrderDTO>> Post([FromBody] OrderDTO order)
         {
@@ -31,6 +35,8 @@ namespace MyShopWebApi.Controllers
                 return Ok(u);
             }
             return StatusCode(400, "try Again");
+            //use short syntax for returning ActionResult
+            //return u != null ? Ok(u) : BadRequest("try Again");
         }
     }
 }
